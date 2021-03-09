@@ -1,0 +1,30 @@
+<section class="sign-wrapper">
+  <div class="sign-left">
+    <%= image_tag "mobile.jpg" %>
+  </div>
+  <div class="sign-right">
+    <p class="title">Mi cuenta</p>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="field">
+        <%= f.email_field :email, class: "form-control inputdata", placeholder: "Email", required: true, autofocus: "autofocus", autocomplete: "email" %>
+      </div>
+      <div class="field">
+        <%= f.password_field :password, autocomplete: "current-password", class: "form-control inputdata", placeholder: "Password", required: true %>
+        <div class="lost-password">
+          <%= link_to "¿Has olvidado la contraseña?", new_password_path(resource_name) %>
+        </div>
+      </div>
+      <div class="actions">
+        <%= f.submit "Iniciar cuenta", class: "submit-dark" %>
+      </div>
+    <% end %>
+    <hr>
+    <p class="title">Registrarme como Chef</p>
+    <p class="smalltext">Si todavía no tienes cuenta de Cheff en COME utiliza esta opción para acceder al formulario de registro.</p>
+    <p class="smalltext">Te solicitaremos la información imprescindible para agilizar el proceso de hacerte Chef.</p>
+    <p class="smalltext">¡Bienvenido!</p> 
+    <div class="register-btn">
+      <a href="/users/sign_up" class="submit-dark">Registrarme</a>   
+    </div>
+  </div>
+</section>

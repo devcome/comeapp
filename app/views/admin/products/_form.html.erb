@@ -1,0 +1,45 @@
+<%= form_with(model:[:admin, product],local:true) do |form| %>
+
+  <div class="form-group">
+    <%= form.label :name, "Plato" %>
+    <%= form.text_field :name, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :description, "Descripción" %>
+    <%= form.text_area :description, class: "form-control", rows: 8 %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :ingredients, "Ingredientes" %>
+    <%= form.text_field :ingredients, class: "form-control" %>
+  </div>
+  
+  <div class="form-group">
+    <%= form.label :collection, "Tipo de cocina" %>
+    <%= form.select :collection, ShopifyAPI::CustomCollection.all.select{|c| !c.handle.include?("control_")}.map{|c| [c.title, c.id]}, {selected: @product.product_collections.map(&:collection_id)}, {multiple: true, class: 'form-control', size: 7} %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :available_quantity, "Unidades" %>
+    <%= form.number_field :available_quantity, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :weight, "Peso" %>
+    <%= form.number_field :weight, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :price, "Precio final" %>
+    <%= form.text_field :price, class: "form-control" %>
+
+  </div>
+
+  <div class="form-group">
+    <%= form.label :image_base64, "Imagen" %>
+    <%= form.file_field :image_base64, class: "form-control" %>
+  </div>
+
+  <%= form.submit "Editar plato", class: "adminButton" %>
+<% end %>

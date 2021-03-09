@@ -1,0 +1,25 @@
+<section class="content-wrapper">
+  <table class="productsTable">
+    <thead>
+      <tr>
+        <th>Plato</th>
+        <th><abbr title="Unidades">Uds.</abbr></th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @products.each do |product| %>
+        <tr class="<%= product.status_name %>">
+          <td class="title"><%= product.name %></td>
+          <td class="stock"><%= product.available_quantity %></td>
+          <td class="status"><abbr title="<%= product.status_name_spanish_abbr_title %>"><%= product.status_name_spanish_abbr %></abbr></td>
+          <td>
+            <%= link_to 'Ver', product, class: "btn-actions" %>
+            <%= link_to 'Editar', edit_product_path(product), class: "btn-actions edit" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>

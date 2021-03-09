@@ -1,0 +1,155 @@
+<section class="content-wrapper registerform">
+    
+  <h1>Formulario de registro</h1> 
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
+    <%= render "users/shared/error_messages", resource: resource %>
+    
+    <h2>Datos Personales</h2>
+  
+    <p class="smalltext">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>   
+    
+    <div class="field">
+      <%= f.label :vendor, "Nombre como Chef" %>
+      <%= f.text_field :vendor, class: "inputdata", placeholder: "Ej. La Casa de Miguel", maxlength: 26, required: true, value: "La Casa de " %>
+      <span>Límite 15 caracteres</span>
+    </div>      
+    
+    <div class="field">
+      <%= f.label :name, "Nombre" %>
+      <%= f.text_field :name, class: "inputdata", placeholder: "Ej. Miguel", required: true %>
+    </div>
+    
+    <div class="field">
+      <%= f.label :lastname, "Apellidos" %>
+      <%= f.text_field :lastname, class: "inputdata", placeholder: "Ej. Martínez Mellado", required: true %>
+    </div>
+    
+    <div class="field">
+      <%= f.label :email %>
+      <%= f.email_field :email, class: "inputdata", required: true, autocomplete: "email" %>
+    </div>
+    
+    <div class="field">
+      <%= f.label :password, "Contraseña" %>
+      <%= f.password_field :password, class: "inputdata", required: true, autocomplete: "new-password", maxlength: 15 %>
+      <span>Límite 15 caracteres y pon algún número y símbolo</span>
+    </div>
+    
+    <div class="field">
+      <%= f.label :password_confirmation, "Repetir contraseña" %>
+      <%= f.password_field :password_confirmation, class: "inputdata", required: true, autocomplete: "new-password", maxlength: 15 %>
+    </div>
+    
+    <div class="field">
+      <%= f.label :contact, "Teléfono" %>
+      <%= f.telephone_field :contact, class: "inputdata", required: true %>
+    </div>
+    
+    <div class="field">
+      <%= f.label :address, "Dirección" %>
+      <%= f.text_field :address, class: "inputdata", required: true %>
+    </div>
+    
+    <div class="field halfcol">
+      <%= f.label :postalcode, "Código postal" %>
+      <%= f.number_field :postalcode, class: "inputdata", required: true %>
+    </div>
+    
+    <div class="field">
+      <%= f.label :city, "Ciudad" %>
+      <%= f.text_field :city, class: "inputdata", required: true %>
+    </div>
+    
+    <hr>
+    
+    <h2>Datos Bancarios</h2>
+  
+    <p class="smalltext">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p> 
+    
+    <div class="field">
+      <%= f.label :bankaccount, "Número de cuenta" %>
+      <%= f.text_field :bankaccount, class: "inputdata", required: true, placeholder: "Ej. ES21 2100 0000 0000 0000 0000", maxlength: 29 %>
+    </div>
+    
+    <div class="field">
+      <%= f.label :bankname, "Nombre del banco" %>
+      <%= f.text_field :bankname, class: "inputdata", required: true, placeholder: "Ej. La Caixa" %>
+    </div>
+    
+    <div class="field">
+      <%= f.label :bankowner, "Nombre del titular" %>
+      <%= f.text_field :bankowner, class: "inputdata", required: true, placeholder: "Ej. Miguel Martínez Mellado" %>
+    </div>
+    
+    <hr>
+    
+    <h2>Datos de Cocina</h2>
+    
+    <p class="smalltext">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p> 
+    
+    <div class="field">
+      <%= f.label :carnet, "Nº de certificado del carnet de manipulador de alimentos e higiene alimentaria" %>
+      <%= f.number_field :carnet, class: "inputdata", required: true %>
+    </div>
+    
+    <div class="field">
+      <%= f.label :collection, "Tipo de cocina que sueles cocinar" %>
+      <% if user_signed_in? %>
+        <%= f.select :collection, Collection.all.map{|c| [c.title, c.id]}, {selected: current_user.user_collections.map(&:collection_id)}, {multiple: true, class: 'inputdata', size: 7} %>
+      <% else %>
+        <%= f.select :collection, Collection.all.map{|c| [c.title, c.id]}, {selected: []}, {multiple: true, class: 'inputdata', size: 7} %>
+      <% end %>
+    </div>
+      
+    <hr>
+    
+    <div class="submitArea">
+      <div class="submitPrivacy">
+        <input type="checkbox" value="0" id="customer_privacy" name="customer_privacy" autocomplete="off" required="">
+        <label for="customer_privacy">Acepto la Política de Privacidad</label>
+      </div>
+      <%= f.submit "Registrarme", class: "submitProduct" %>
+    </div>
+  <% end %>
+  
+</section>
+
+
+
+
+<!-- <script type="text/javascript">
+  $("select").mousedown(function(e){
+  
+    e.preventDefault();
+    
+    var select = this;
+    var scroll = select.scrollTop;
+    
+    e.target.selected = !e.target.selected;
+    
+    setTimeout(function(){select.scrollTop = scroll;}, 0);
+    
+    $(select).focus();
+    
+  }).mousemove(function(e){e.preventDefault()});
+</script>
+ -->
+<script>
+  
+  $('#user_vendor').keyup(function(e) {
+    if (this.value.length < 11) {
+      this.value = 'La Casa de ';
+    } else if (this.value.indexOf('La Casa de ') !== 0) {
+      this.value = 'La Casa de ' + String.fromCharCode(e.which);
+    }
+  });
+  
+  $('#user_bankaccount').on('keypress change', function () {
+    $(this).val(function (index, value) {
+      return value.replace(/\W/gi, '').replace(/(.{4})/g, '$1 ');
+    });
+  });
+      
+</script>

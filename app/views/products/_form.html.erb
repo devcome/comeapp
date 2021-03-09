@@ -1,0 +1,246 @@
+<section class="content-wrapper">  
+  <%= form_with(model: product, local: true, id: "product_form") do |form| %>
+
+    <% if product.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
+
+        <ul>
+          <% product.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    
+    <div class="field">
+      <div class="col-left">
+        <label for="product_name">Nombre plato</label>
+        <p class="smalltext">Este será el título de tu plato y será visible para todo el mundo, te recomendamos que utilices entres 3 y 4 palabras que lo describan de forma clara.</p>
+      </div>
+      <div class="col-right">
+        <%= form.text_field :name, class: 'inputdata', placeholder: 'Ej. Revuelto de trigueros', required: true %>
+      </div>
+    </div>      
+    
+    <div class="field">
+      <div class="col-left">
+        <label for="product_description">Descripción</label>
+        <p class="smalltext">Esta descripción aparecerá en la ficha de tu plato.</p>
+        <p class="smalltext">Te recomendamos que incluyas la técnica con la que lo has preparado (plancha, vapor, cazuela, etc.) y los ingredientes que mejor describan tu plato.</p>
+      </div>
+      <div class="col-right">
+        <%= form.text_area :description, class: 'inputdata', placeholder: 'Ej. Espárragos trigueros a la plancha con huevos revueltos, aceite de oliva virgen extra, sal gorda y orégano.', required: true %>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="col-left">
+        <label for="product_description">Ingredientes</label>
+        <p class="smalltext">Escribe todos los ingredientes que utilizas para crear tu plato.</p>
+        <p class="smalltext">Es importante que incluyas todos, incluso aquellos que le dan tu toque personal para que podamos clasificarlos teniendo en cuenta posibles intolerancias.</p>
+      </div>
+      <div class="col-right">
+        <%= form.text_area :ingredients, class: 'inputdata', placeholder: 'Ej. Azúcar, almendras, etc.', required: true %>
+      </div>
+    </div>
+    
+    <div class="field">
+      <div class="col-left">
+        <label for="product_collection">Selecciona tipo de cocina</label>
+        <p class="smalltext">Selecciona el tipo de cocina de tu plato.</p>
+        <p class="smalltext">Si consideras que tu plato puede encajar en varias clasificaciones inclúyelas todas, eso nos ayudará a dar visibilidad a tu plato dentro de las diferentes categorías.</p>
+      </div> 
+      <div class="col-right">
+        <%= form.select :collection, ShopifyAPI::CustomCollection.all.select{|c| !c.handle.include?("control_")}.map{|c| [c.title, c.id]}, {selected: @product.product_collections.map(&:collection_id)}, {multiple: true, class: 'inputdata', size: 7} %>
+      </div>
+    </div>
+    
+    <hr/>
+    
+    <div class="field">
+      <div class="col-left">
+        <label for="product_price">Precio del plato</label>
+        <p class="smalltext">Selecciona el tipo de cocina de tu plato.</p>
+        <p class="smalltext">Si necesitas ayuda para definirlo puedes ponerte en <a href="mailto:info@come.com">contacto con nosotros</a> y te asesoraremos.</p>
+        <p class="smalltext">Te recordamos que a esta cantidad le añadiremos 2,50€ euros fijos para cubrir la parte del delivery que ofrece Come.</p>
+      </div> 
+      <div class="col-right">
+        <div class="subfield">
+          <div class="subcolumn-left">
+            <p class="subcol-title">Cantidad en gramos</p>
+            <p class="smalltext">Calcula los gramos que va a tener el plato para que sea una ración.</p>
+          </div>
+          <div class="subcolumn-right">
+            <div class="input-group suffix"> 
+              <%= form.number_field :weight, class: 'inputdata inputright', placeholder: '135', required: true %>
+              <span class="input-group-addon">gr</span>
+            </div>
+          </div>
+        </div>
+        <div class="subfield">  
+          <div class="subcolumn-left">
+            <p class="subcol-title">Unidades</p>
+            <p class="smalltext">La cantidad de unidades que puedes servir de este plato.</p>
+          </div>
+          <div class="subcolumn-right">
+            <div class="input-group suffix"> 
+              <%= form.number_field :available_quantity, class: 'inputdata inputright', placeholder: '1', required: true %>
+              <span class="input-group-addon">uds.</span>
+            </div>
+          </div>
+        </div>
+        <div class="subfield">  
+          <div class="subcolumn-left">
+            <p class="subcol-title">Precio del plato</p>
+            <p class="smalltext">Esta es la cantidad que recibirás por cada pedido.</p>
+          </div>
+          <div class="subcolumn-right">
+            <div class="input-group suffix">
+              <%= form.number_field :amount, class: 'inputdata inputright', placeholder: '10,00', required: true, step: '.01', value: number_with_precision(product.amount, precision: 2) %>
+              <span class="input-group-addon">eur</span>
+            </div>
+          </div>
+        </div>
+        
+        <hr/>
+        
+        <div class="subfield">  
+          <div class="subcolumn-left">
+            <p class="subcol-title">Delivery fijo</p>
+            <p class="smalltext">Precio fijo delivery</p>
+          </div>
+          <div class="subcolumn-right">
+            <div class="input-group suffix"> 
+              <%= form.number_field :delivery_price, class: 'inputdata inputright inputdelivery', readonly: true, value: (number_with_precision(product.delivery_price, precision: 2) || 0) %>
+              <span class="input-group-addon">eur</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="subfield">  
+          <div class="subcolumn-left">
+            <p class="subcol-title">Precio final Cliente</p>
+            <p class="smalltext">Este es el precio total que será visible para el cliente.</p>
+          </div>
+          <div class="subcolumn-right">
+            <div class="input-group suffix">
+              <%= form.number_field :price, class: 'inputdata inputright inputtotal', readonly: true, value: (number_with_precision(product.price, precision: 2) || 0) %>
+              <span class="input-group-addon">eur</span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <hr/>
+
+    <div class="field">
+      <div class="col-left">
+        <label for="product_ingredients">Selecciona horario de cocinado</label>
+        <p class="smalltext">Indica qué días y en qué franjas horarias estará disponible tu plato.</p>
+        <p class="smalltext">Puedes elegir uno, varios o todos.</p>
+        <p class="smalltext">Si necesitas ayuda para definirlo puedes ponerte en <a href="mailto:info@come.com">contacto con nosotros</a> y te asesoraremos.</p>
+        
+      </div>
+      <div class="col-right">
+        <div class="col50">
+          <div class="col50-title">Días</div>
+          <% [["monday", "Lunes"], ["tuesday", "Martes"], ["wednesday", "Miércoles"], ["thursday", "Jueves"], ["friday", "Viernes"], ["saturday", "Sábado"], ["sunday", "Domingo"]].each_with_index do |day, index| %>
+            <label class="inputCheck">
+              <%= form.check_box "#{day[0]}", checked: @product.days[index] == "1" %>
+              <span class="checkmark"></span>
+              <div class="deliverTime"><%= day[1] %></div>
+            </label>
+          <% end %>
+        </div>
+        <div class="col50">
+          <div class="col50-title">Horarios</div>
+          
+          <label class="inputCheck">
+            <%= form.check_box :breakfast, checked: @product.schedule[0] == "1" %>
+            <span class="checkmark"></span>
+            <div class="deliverTime">Desayuno
+              <span>7:30 - 12:30</span>
+            </div>
+          </label>
+          <label class="inputCheck">
+            <%= form.check_box :food, checked: @product.schedule[1] == "1" %>
+            <span class="checkmark"></span>
+            <div class="deliverTime">Comida
+            <span>13:30 - 16:30</span></div>
+          </label>
+          <label class="inputCheck">
+            <%= form.check_box :snack, checked: @product.schedule[2] == "1" %>
+            <span class="checkmark"></span>
+            <div class="deliverTime">Merienda
+            <span>16:30 - 20:30</span></div>
+          </label>
+          <label class="inputCheck">
+            <%= form.check_box :cena, checked: @product.schedule[3] == "1" %>
+            <span class="checkmark"></span>
+            <div class="deliverTime">Cena
+            <span>20:30 - 23:30</span></div>
+          </label>
+        </div>
+        
+      </div>
+    </div>
+
+    <hr/>
+          
+    <div class="field">
+      
+      <div class="col-left">
+        <label for="product_collection">Fotografía del plato</label>
+        <p class="smalltext">La imagen de tu plato será tu carta de presentación.</p>
+        <p class="smalltext">Para añadirla haz click sobre el botón "Añadir foto" y selecciona en tus archivos la imagen que quieres subir.</p>
+        <p class="smalltext">Si tienes cualquier duda sobre este proceso o cuál es la mejor manera de fotografiar tu plato contacta con nosotros.</p>
+      </div> 
+      <div class="col-right">
+        <div class="photo-upload">
+          <div class="photo-preview">
+            <div id="imagePreview" style="background-image: url('<%= @product.image_url %>');"></div>
+          </div>
+          <div class="photo-add">
+            <%= form.file_field :image_base64, accept: '.png, .jpg, .jpeg' %>
+            <label for="product_image_base64">
+              <span>Añadir foto</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="actions">
+      <%= form.submit class: 'submitProduct', value: 'Validar plato', "data-disable-with": 'Validar plato' %>
+    </div>
+  <% end %>
+  
+</section>
+
+<script type="text/javascript">
+  function set_price(){
+    var product_amount = parseFloat($("#product_amount").val()) || 0;
+    var product_delivery_price = parseFloat($("#product_delivery_price").val());
+    var product_price = (product_amount + product_delivery_price).toFixed(2);
+    $("#product_price").val(product_price);
+  }
+  $("#product_amount").keyup(function(){
+    set_price();
+  })
+  set_price();
+
+  <% if params[:action] == "new" %>
+    $("#product_form").submit(function( event ) {
+      var fileName = $("#product_image_base64").val();
+      if(fileName) {
+      }
+      else {
+        alert("Por favor, añade una imagen de tu plato.");
+        return false;
+      }
+    });
+  <% end %>
+</script>

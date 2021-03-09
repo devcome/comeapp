@@ -1,0 +1,48 @@
+<section class="content-wrapper profile">
+	
+	<h1 class="single-product-title">
+		<%= current_user.name %> <%= current_user.lastname %>
+	</h1>
+	
+	<p><%= current_user.vendor %></p>
+	
+	<hr>
+	
+	<p><%= current_user.email %></p>
+	
+	<hr>
+	
+	<p><%= current_user.contact %></p>
+	
+	<hr>
+	
+	<p><%= current_user.address %>, <%= current_user.postalcode %>, <%= current_user.city %></p>
+	
+	<hr>
+	
+	<h2>
+		Datos Bancarios
+	</h2>
+	
+	<p><%= current_user.bankname %></p>
+	
+	<hr>
+	
+	<p><%= current_user.bankaccount %></p>
+	
+	<hr>
+	
+	<h2>
+		Datos Cocina
+	</h2>
+	
+	<p><%= current_user.carnet %></p>
+	
+	<hr>
+	
+	<!-- <p>$user_collections (Example Kapil: Asiática, Italiana, Japonesa)</p> -->
+	<p><%= current_user.collections.map(&:title).join(", ") %></p>
+
+	<hr>
+	<a class="single-button" href="/users/edit">Editar datos personales</a>
+</section>

@@ -1,0 +1,95 @@
+<%= form_with(model:[:admin, user],local:true) do |form| %>
+
+  <div class="form-group">
+    <%= form.label :vendor, "Casa" %>
+    <%= form.text_field :vendor, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :name, "Nombre" %>
+    <%= form.text_field :name, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :lastname, "Apellidos" %>
+    <%= form.text_field :lastname, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :email %>
+    <%= form.email_field :email, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :contact, "Teléfono" %>
+    <%= form.text_field :contact, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :address, "Dirección" %>
+    <%= form.text_field :address, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :postalcode, "Código postal" %>
+    <%= form.text_field :postalcode, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :city, "Ciudad" %>
+    <%= form.text_field :city, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :bankaccount, "Número de cuenta" %>
+    <%= form.text_field :bankaccount, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :bankname, "Nombre del banco" %>
+    <%= form.text_field :bankname, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :bankowner, "Nombre del titular" %>
+    <%= form.text_field :bankowner, class: "form-control", required: true %>
+  </div>
+  
+  <div class="form-group">
+    <%= form.label :carnet, "Nº de carnet" %>
+    <%= form.text_field :carnet, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :collection, "Colecciones" %>
+    <%= form.select :collection, Collection.all.map{|c| [c.title, c.id]}, {selected: @user.user_collections.map(&:collection_id)}, {multiple: true, class: 'form-control', size: 7} %>
+  </div>
+
+  <%= form.submit "Editar cocinero", class: "adminButton" %>
+<% end %>
+
+
+<!-- <div>
+  <%= form_with(model:[:admin, user],local:true) do |form| %>
+
+    <% if @user.errors.any? %>
+      <% @user.errors.full_messages.each do |message|%>
+      <h3 class="text-danger"><%= message %> </h3>
+      <%end%>
+    <%end%>
+
+
+    <div class="form-group">
+      <%= form.label :password %>
+      <%= form.text_field :password, class: "form-control", required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :password_confirmation %>
+      <%= form.text_field :password_confirmation, class: "form-control", required: true %>
+    </div>
+
+  <% end %>
+</div>
+ -->
+

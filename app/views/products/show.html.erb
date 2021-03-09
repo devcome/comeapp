@@ -1,0 +1,57 @@
+<section class="content-wrapper single">
+  <h1 class="single-product-title"><%= @product.name %></h1>
+  
+  <h3 class="single-product-field">Descripción</h3>
+  <p><%= @product.description %></p>
+  <hr>
+  
+  <h3 class="single-product-field">Ingredientes</h3>
+  <p><%= @product.ingredients %></p>
+  <hr>
+  
+  <h3 class="single-product-field">Tipo de cocina</h3>
+  <p><%= @product.collection_names %></p>
+  <hr>
+
+  <h3 class="single-product-field">
+    Información del plato
+  </h3>
+  <p>GRAMOS: <%= @product.weight %> gr</p>
+  <p>PRECIO: <%= @product.price_in_euro %></p>
+  <p>DELIVERY: <%= @product.delivery_price_in_euro %></p>
+  <p>PRECIO VENTA: <%= @product.total_price_in_euro %></p>
+  <hr>
+
+  <h3 class="single-product-field">
+    Horario de cocinado
+  </h3>
+  <p>DÍAS: <%= @product.delivery_days %></p>
+  <p>HORARIOS: <%= @product.delivery_hours %></p>
+  <hr>
+  
+  <h3 class="single-product-field">Imagen de plato</h3>
+  <div class="photo-preview">
+    <div id="imagePreview" style="background-image: url('<%= @product.image_url %>');"></div>
+  </div>
+  <p>&nbsp;</p>
+  <hr>
+  
+  <%= link_to 'Volver', products_path, class: "single-button" %>
+  <%= link_to 'Editar', edit_product_path(@product), class: "single-button" %>
+</section>
+
+<!-- <p>
+  <strong>Stock:</strong>
+  <%#= @product.available_quantity %>
+</p>
+
+<p>
+  <strong>Weight:</strong>
+  <%#= @product.weight %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%#= @product.status_name %>
+</p>
+ -->
