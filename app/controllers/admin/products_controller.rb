@@ -72,20 +72,13 @@ class Admin::ProductsController < Admin::ApplicationController
     new_product.vendor = @product.user.vendor
     new_product.save
     new_product.variants[0].price = @product.price
-    new_product.variants[0].sku = @product.available_quantity
+    # new_product.variants[0].sku = @product.available_quantity
     # new_product.variants[0].inventory_quantity = @product.available_quantity
     new_product.variants[0].weight = @product.weight
 
     if new_product.save!
 
       @product.update(shopify_product_id: new_product.id)
-
-      # inventory item
-      inventory_item = ShopifyAPI::InventoryItem.find new_product.variants[0].inventory_item_id rescue nil
-      if inventory_item
-        inventory_item.tracked = true
-        inventory_item.save
-      end
 
       # images
       if @product.image_base64.present?
@@ -129,6 +122,22 @@ class Admin::ProductsController < Admin::ApplicationController
         collection = ShopifyAPI::CustomCollection.find(product_collection.collection_id)
         collection.add_product new_product
       end
+
+      # inventory item
+      inventory_item = ShopifyAPI::InventoryItem.find new_product.variants[0].inventory_item_id rescue nil
+      if inventory_item
+        inventory_item.tracked = true
+        inventory_item.save
+
+        # inventory level
+        params_inventory_item_ids = {inventory_item_ids: inventory_item.id}
+        inventory_level = ShopifyAPI::InventoryLevel.find(:all, params: params_inventory_item_ids)[0] rescue nil
+
+        if inventory_level
+          inventory_level.adjust(@product.available_quantity - inventory_level.available)
+        end
+      end
+      
     end
   end
 
