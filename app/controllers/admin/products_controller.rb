@@ -9,6 +9,7 @@ class Admin::ProductsController < Admin::ApplicationController
 
   def update
     if @product.update(product_params)
+      @product.image_base64 = ("data:image/png;base64," + Base64.strict_encode64(File.open(params[:product][:image_base64].path).read)) if params[:product][:image_base64].present?
       @product.product_collections.destroy_all
       params[:product][:collection].reject(&:empty?).each do |collection_id|
         ProductCollection.create(product_id: @product.id, collection_id: collection_id)
@@ -60,7 +61,7 @@ class Admin::ProductsController < Admin::ApplicationController
   end
 
   def product_params
-    params.require(:product).permit(:user_id, :name, :description, :image, :available_quantity, :price, :size, :status, :online)
+    params.require(:product).permit(:user_id, :name, :description, :available_quantity, :price, :size, :status, :online)
   end
 
   def update_on_shopify
@@ -85,6 +86,7 @@ class Admin::ProductsController < Admin::ApplicationController
         new_product.images.each do |image|
           image.destroy
         end
+        new_product = ShopifyAPI::Product.find new_product.id
         i = ShopifyAPI::Image.new
         i.attach_image(Base64.decode64(@product.image_base64.gsub("data:image/png;base64,", ""))) # <-- attach_image is a method, not an attribute
         new_product.images << i
@@ -119,8 +121,8 @@ class Admin::ProductsController < Admin::ApplicationController
       }))
 
       @product.product_collections.each do |product_collection|
-        collection = ShopifyAPI::CustomCollection.find(product_collection.collection_id)
-        collection.add_product new_product
+        collection = ShopifyAPI::CustomCollection.find(product_collection.collection_id) rescue nil
+        collection.add_product new_product if collection
       end
 
       # inventory item
